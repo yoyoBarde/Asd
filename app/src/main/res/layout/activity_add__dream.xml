@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="julius.barde.com.dreamlisterapp.Add_Dream">
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+<ImageView
+    android:id="@+id/dreamImage"
+    android:layout_margin="20dp"
+    android:layout_width="200dp"
+    android:layout_height="170dp"
+    android:src="@drawable/blank"/>
+ <Button
+     android:layout_toRightOf="@+id/dreamImage"
+     android:layout_centerVertical="true"
+    android:layout_height="40dp"
+     android:layout_width="wrap_content"
+     android:text="Add Photo"
+     android:onClick="menu_button"
+
+     />
+
+</RelativeLayout>
+<TextView
+    android:layout_marginLeft="20dp"
+    android:layout_marginTop="5dp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" 
+    android:text="Item Name:"
+    android:textSize="@dimen/textSize"
+    />
+ <EditText
+     android:id="@+id/itemName_et"
+     android:layout_width="match_parent"
+     android:layout_height="wrap_content"
+     android:inputType="text"/>
+ <TextView
+     android:layout_marginLeft="20dp"
+     android:layout_marginTop="5dp"
+     android:layout_width="wrap_content"
+     android:layout_height="wrap_content"
+     android:text="Price:"
+     android:textSize="@dimen/textSize"
+     />
+ <EditText
+     android:id="@+id/price_et"
+     android:layout_width="match_parent"
+     android:layout_height="wrap_content"
+     android:inputType="number"
+     />
+ <TextView
+     android:layout_marginLeft="20dp"
+     android:layout_marginTop="5dp"
+     android:layout_width="wrap_content"
+     android:layout_height="wrap_content"
+     android:text="Description:"
+     android:textSize="@dimen/textSize"
+     />
+ <EditText
+     android:id="@+id/description_et"
+
+     android:layout_width="match_parent"
+     android:layout_height="wrap_content"
+     android:inputType="text"/>
+
+ <Button
+     android:layout_marginTop="10dp"
+     android:layout_centerVertical="true"
+     android:layout_height="60dp"
+     android:layout_width="wrap_content"
+     android:text="ADD"
+     android:layout_gravity="center_horizontal"
+     android:onClick="Add_Item"
+     />
+</LinearLayout>
