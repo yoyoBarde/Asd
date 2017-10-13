@@ -43,7 +43,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
     public void onBindViewHolder(MyViewHolder holder, int position) {
         final int position1 = position;
         holder.name.setText(Item.get(position).name);
-        //holder.image.setImageResource(Item.get(position).imageID);
+        holder.image.setImageBitmap(Item.get(position).imageID);
         holder.price.setText(String.valueOf(Item.get(position).price));
 
         holder.image.setOnClickListener(new View.OnClickListener() {

@@ -7,7 +7,7 @@ import android.graphics.Bitmap;
  */
 
 public class DreamItem {
-    private int ID;
+
     public Bitmap imageID;
     public String price;
     public String name;
@@ -17,13 +17,7 @@ public class DreamItem {
 
 
 
-    public  int getID() {
-        return ID;
-    }
 
-    public void setID(int ID) {
-        this.ID = ID;
-    }
 
     public Bitmap getImageID() {
         return imageID;

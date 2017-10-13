@@ -73,6 +73,10 @@ public class Add_Dream extends AppCompatActivity {
     }
 
     public void Add_Item(View view) {
+
+        if(name_et.getText().toString().length()==0||price_et.getText().toString().length()==0||description_et.length()==0)
+            Toast.makeText(this, "Incomeplete Input!!!", Toast.LENGTH_SHORT).show();
+            else{
         itemPhoto.setImageResource(R.drawable.blank);
         setValues();
 
@@ -86,7 +90,7 @@ public class Add_Dream extends AppCompatActivity {
 
         setResult(Activity.RESULT_OK,myIntent);
         finish();
-
+}
 
 
 

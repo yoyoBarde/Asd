@@ -12,112 +12,61 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.lang.Double.parseDouble;
-
-/**
- * Created by JBluee on 10/9/2017.
- */
-
 public class myDBHandler extends SQLiteOpenHelper {
-
-    public static final int DATABASE_VERSION = 1;
-    public static final String DATABASE_NAME = "dreamlist.db";
-    public static final String TABLE_DREAMITEM = "dreamlist";
-    // Drealist Table
-    public static final String COLUMN_ID ="id";
-    public static final String COLUMN_ITEM_NAME = "name";
-    public static final String COLUMN_DESCRIPTION = "description";
-    public static final String COLUMN_PRICE = "price";
-    public static final String COLUMN_IMAGE = "image";
-
-    public myDBHandler(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    private static final String TAG ="DatabaseHelper";
+    private static final String TABLE_NAME ="DREAMLIST" ;
+    private static final String COL1 = "ID";
+    private  static final String COL2 = "NAME";
+    private  static final String COL3 = "DESCRIPTION";
+    private  static final String COL4 = "PRICE";
+    private  static final String COL5 = "IMAGE";
+    public myDBHandler (Context context){
+        super(context, TABLE_NAME,null,1);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_DREAMLIST_TABLE = "CREATE TABLE " + TABLE_DREAMITEM + "("
-                + COLUMN_ID + " INTEGER PRIMARY KEY," +COLUMN_ITEM_NAME+ "TEXT," +COLUMN_DESCRIPTION+"TEXT,"
-                + COLUMN_PRICE + "DOUBLE" +COLUMN_IMAGE+"BLOB )";
-        db.execSQL(CREATE_DREAMLIST_TABLE);
+        String createTable = "CREATE TABLE " + TABLE_NAME + " (ID INTEGER PRIMARY KEY AUTOINCREMENT,"+ COL2 +" TEXT, " + COL3 +
+                " TEXT, "+ COL4+ " NUMBER, " + COL5 + " TEXT " + ")" ;
+        db.execSQL(createTable);
     }
-    // Upgrading    database
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // Drop older table if existed
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_DREAMITEM);
 
-        // Create tables again
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int i, int i1) {
+        db.execSQL("DROP IF TABLE EXISTS "+ TABLE_NAME);
         onCreate(db);
     }
-
-    void addItem(DreamItem myDreamItem) {
+    public void deleteWish(Integer id, String name){
         SQLiteDatabase db = this.getWritableDatabase();
-
-        ContentValues values = new ContentValues();
-        values.put(COLUMN_ID, myDreamItem.getID());
-        values.put(COLUMN_ITEM_NAME, myDreamItem.getName());
-        values.put(COLUMN_DESCRIPTION, myDreamItem.getDescription());
-        values.put(COLUMN_PRICE, myDreamItem.getPrice());
-        values.put(COLUMN_IMAGE,getBytes(myDreamItem.getImageID()));
-
-
-        // Inserting Row
-        db.insert(TABLE_DREAMITEM, null, values);
-        db.close();
+        String query = "DELETE FROM " + TABLE_NAME + " WHERE "
+                + COL1 + " = '" + id + "'" +
+                " AND " + COL2 + " = '" + name + "'";
+        db.execSQL(query);
     }
 
-
-    // Deleting single Dream Item
-    public void deleteItem(DreamItem dreamItem) {
+    public boolean addItem(String name, String desc, String price, Bitmap Image){
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_DREAMITEM, COLUMN_ID + " = ?",
-                new String[] { String.valueOf(dreamItem.getID()) });
-        db.close();
-    }
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL2,name);
+        contentValues.put(COL3,desc);
+        contentValues.put(COL4,price);
+        contentValues.put(COL5,getBytes(Image));
 
-    // Updating single DreamItem
-    public int updateDreamItem(DreamItem DreamItem) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(COLUMN_ITEM_NAME, DreamItem.getName());
-        values.put(COLUMN_PRICE, DreamItem.getPrice());
-        values.put(COLUMN_DESCRIPTION, DreamItem.getDescription());
-        values.put(COLUMN_IMAGE,getBytes(DreamItem.getImageID()));
+        long result = db.insert(TABLE_NAME,null,contentValues);
 
-        // updating row
-        return db.update(TABLE_DREAMITEM, values, COLUMN_ID + " = ?",
-                new String[] { String.valueOf(DreamItem.getID()) });
-    }
-
-
-    // Getting All DreamItems
-    public List<DreamItem> getAllDreamItems() {
-        List<DreamItem> DreamItemList = new ArrayList<DreamItem>();
-        // Select All Query
-        String selectQuery = "SELECT  * FROM " + TABLE_DREAMITEM;
-
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(selectQuery, null);
-
-        // looping through all rows and adding to list
-        if (cursor.moveToFirst()) {
-            do {
-                DreamItem DreamItem = new DreamItem();
-                DreamItem.setID(Integer.parseInt(cursor.getString(0)));
-                DreamItem.setName(cursor.getString(1));
-                DreamItem.setDescription(cursor.getString(2));
-                DreamItem.setPrice(parseDouble(cursor.getString(3)));
-                DreamItem.setImageID(getImage(cursor.getBlob(4)));
-                // Adding DreamItem to list
-                DreamItemList.add(DreamItem);
-            } while (cursor.moveToNext());
+        if(result == -1){
+            return  false;
         }
-
-        // return DreamItem list
-        return DreamItemList;
+        else {
+            return true;
+        }
     }
-    // convert from bitmap to byte array
+    public Cursor getData(){
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM " + TABLE_NAME;
+        Cursor data = db.rawQuery(query, null);
+        return  data;
+    }
     public static byte[] getBytes(Bitmap bitmap) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 0, stream);
@@ -128,4 +77,30 @@ public class myDBHandler extends SQLiteOpenHelper {
     public static Bitmap getImage(byte[] image) {
         return BitmapFactory.decodeByteArray(image, 0, image.length);
     }
+
+    public List<DreamItem> getAllDreamItems() {
+        List<DreamItem> DreamItemList = new ArrayList<DreamItem>();
+        // Select All Query
+        String selectQuery = "SELECT  * FROM " + TABLE_NAME;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                DreamItem DreamItem = new DreamItem();
+                DreamItem.setName(cursor.getString(1));
+                DreamItem.setDescription(cursor.getString(2));
+                DreamItem.setPrice((cursor.getString(3)));
+                DreamItem.setImageID(getImage(cursor.getBlob(4)));
+                // Adding DreamItem to list
+                DreamItemList.add(DreamItem);
+            } while (cursor.moveToNext());
+        }
+
+        // return DreamItem list
+        return DreamItemList;
+    }
+
 }

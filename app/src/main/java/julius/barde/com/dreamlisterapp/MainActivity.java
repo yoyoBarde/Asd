@@ -23,14 +23,16 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     Adapter myAdapter;
     List<DreamItem> AllDreamItem ;
-    public myDBHandler myDB= new myDBHandler(this);
+    myDBHandler myDB= new myDBHandler(this);
+    int idALLOC = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+findViews();
 
-        findViews();
+
 
 
 }
@@ -41,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(myAdapter);
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 2);
         recyclerView.setLayoutManager(mLayoutManager);
+
 
     }
 
@@ -93,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQ_CODE && resultCode == RESULT_OK) {
+
             String myName= data.getStringExtra("NAME");
             String myPrice= data.getStringExtra("PRICE");
             String myDescription= data.getStringExtra("DESCRIPTION");
@@ -101,10 +105,26 @@ public class MainActivity extends AppCompatActivity {
             myDreamItem.setPrice((myPrice));
             myDreamItem.setDescription(myDescription);
             myDreamItem.setImageID(myImageID);
-            Toast.makeText(this, myPrice, Toast.LENGTH_SHORT).show();
+
+
+            Log.d("Insert: ", "Inserting ..");
+            AddDream(myDreamItem);
 
 
         }
+
+    }
+
+    public void AddDream(DreamItem myDreamItem){
+
+        boolean insertData = myDB.addItem(myDreamItem.getName(),myDreamItem.getDescription(),myDreamItem.getPrice(),myDreamItem.getImageID());
+        findViews();
+        if (insertData) {
+            Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, myDreamItem.getName()+myDreamItem.getPrice()+myDreamItem.getDescription()+myDreamItem.getImageID(), Toast.LENGTH_SHORT).show();
+        }
+
 
     }
 }
